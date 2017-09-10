@@ -1,17 +1,17 @@
 package ru.specialcourse.java.task;
 
 import ru.specialcourse.java.analyzer.AfterAnnotationAnalyzer;
-import ru.specialcourse.java.analyzer.AnnotationAnalyzer;
 import ru.specialcourse.java.analyzer.BeforeAnnotationAnalyzer;
 import ru.specialcourse.java.analyzer.TestAnnotationAnalyzer;
+import ru.specialcourse.java.printer.Printer;
 
 import java.lang.reflect.Method;
 
 public class TestTask implements Runnable {
     private Class clazz;
-    private AnnotationAnalyzer beforeAnnotationAnalyzer;
-    private AnnotationAnalyzer testAnnotationAnalyzer;
-    private AnnotationAnalyzer afterAnnotationAnalyzer;
+    private BeforeAnnotationAnalyzer beforeAnnotationAnalyzer;
+    private TestAnnotationAnalyzer testAnnotationAnalyzer;
+    private AfterAnnotationAnalyzer afterAnnotationAnalyzer;
 
     public TestTask(Class clazz) {
         this.clazz = clazz;
@@ -24,6 +24,8 @@ public class TestTask implements Runnable {
     }
 
     public void run() {
+        String stringBuffer = "";
+
         try {
             Method beforeMethod = beforeAnnotationAnalyzer.analyze(clazz)[0];
             Method[] testMethods = testAnnotationAnalyzer.analyze(clazz);
@@ -32,12 +34,26 @@ public class TestTask implements Runnable {
             Object objectInstance = clazz.newInstance();
 
             for (Method testMethod : testMethods) {
-                beforeMethod.invoke(objectInstance);
-                testMethod.invoke(objectInstance);
-                afterMethod.invoke(objectInstance);
+                Class exceptedException = testAnnotationAnalyzer.getExpectedException(testMethod);
+
+                try {
+                    beforeMethod.invoke(objectInstance);
+
+                    try {
+                        testMethod.invoke(objectInstance);
+                    } catch (Throwable e) {
+                        // TODO: Обработка excepted exception и assert exception
+                    }
+
+                    afterMethod.invoke(objectInstance);
+                } catch (Exception e) {
+                    // TODO: обработка исключений при исполнении методов
+                }
             }
         } catch (Exception e) {
-            // TODO: обработать исключения неправильного считывания методов
+            // TODO: обработать исключения неправильного считывания методов или создания экземпляра
         }
+
+        Printer.print(stringBuffer);
     }
 }
