@@ -2,21 +2,26 @@ package ru.specialcourse.java.analyzer;
 
 import ru.specialcourse.java.annotation.After;
 import ru.specialcourse.java.exception.MultipleAfterAnnotationException;
+import ru.specialcourse.java.exception.NotAcceptableMethod;
 
 import java.lang.reflect.Method;
 
 public class AfterAnnotationAnalyzer implements AnnotationAnalyzer {
-    public void analyze(Class<?> clazz) throws MultipleAfterAnnotationException {
+    public Method[] analyze(Class<?> clazz) throws MultipleAfterAnnotationException, NotAcceptableMethod {
         Method[] methods = clazz.getMethods();
-        boolean afterAnnotationIsPresent = false;
+        Method withAfterAnnotationMethod = null;
 
         for (Method method : methods) {
-            if (afterAnnotationIsPresent) {
-                throw new MultipleAfterAnnotationException();
-            }
             if (method.isAnnotationPresent(After.class)) {
-                afterAnnotationIsPresent = true;
+                if (withAfterAnnotationMethod != null) {
+                    throw new MultipleAfterAnnotationException();
+                }
+
+                checkMethod(method);
+                withAfterAnnotationMethod = method;
             }
         }
+
+        return new Method[]{withAfterAnnotationMethod};
     }
 }
