@@ -14,7 +14,9 @@ public class BeforeAnnotationAnalyzer implements AnnotationAnalyzer {
         for (Method method: methods) {
             if (withBeforeMethod != null) {
                 throw new MultipleBeforeAnnotationException();
-            } else if (method.isAnnotationPresent(Before.class)) {
+            }
+
+            if (method.isAnnotationPresent(Before.class)) {
                 checkMethod(method);
                 withBeforeMethod = method;
             }

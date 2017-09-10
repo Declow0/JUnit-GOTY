@@ -14,7 +14,9 @@ public class AfterAnnotationAnalyzer implements AnnotationAnalyzer {
         for (Method method : methods) {
             if (withAfterMethod != null) {
                 throw new MultipleAfterAnnotationException();
-            } else if (method.isAnnotationPresent(After.class)) {
+            }
+
+            if (method.isAnnotationPresent(After.class)) {
                 checkMethod(method);
                 withAfterMethod = method;
             }
