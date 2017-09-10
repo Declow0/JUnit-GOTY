@@ -9,19 +9,19 @@ import java.lang.reflect.Method;
 public class BeforeAnnotationAnalyzer implements AnnotationAnalyzer {
     public Method[] analyze(Class<?> clazz) throws MultipleBeforeAnnotationException, NotAcceptableMethod {
         Method[] methods = clazz.getMethods();
-        Method withBeforeMethod = null;
+        Method withBeforeAnnotationMethod = null;
 
         for (Method method: methods) {
-            if (withBeforeMethod != null) {
-                throw new MultipleBeforeAnnotationException();
-            }
-
             if (method.isAnnotationPresent(Before.class)) {
+                if (withBeforeAnnotationMethod != null) {
+                    throw new MultipleBeforeAnnotationException();
+                }
+
                 checkMethod(method);
-                withBeforeMethod = method;
+                withBeforeAnnotationMethod = method;
             }
         }
 
-        return new Method[]{withBeforeMethod};
+        return new Method[]{withBeforeAnnotationMethod};
     }
 }

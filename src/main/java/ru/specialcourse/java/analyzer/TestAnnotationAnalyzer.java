@@ -10,15 +10,15 @@ import java.util.List;
 public class TestAnnotationAnalyzer implements AnnotationAnalyzer {
     public Method[] analyze(Class<?> clazz) throws NotAcceptableMethod {
         Method[] methods = clazz.getMethods();
-        List<Method> withTestMethods = new ArrayList<>();
+        List<Method> withTestAnnotationMethods = new ArrayList<>();
 
         for (Method method: methods) {
             if (method.isAnnotationPresent(Test.class)) {
                 checkMethod(method);
-                withTestMethods.add(method);
+                withTestAnnotationMethods.add(method);
             }
         }
 
-        return (Method[]) withTestMethods.toArray();
+        return (Method[]) withTestAnnotationMethods.toArray();
     }
 }

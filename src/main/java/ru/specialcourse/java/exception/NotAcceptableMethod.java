@@ -3,9 +3,10 @@ package ru.specialcourse.java.exception;
 import java.lang.reflect.Method;
 
 public class NotAcceptableMethod extends Exception {
-    private static final String MESSAGE = " method is not acceptable";
+    private static final String START_MESSAGE = "Method";
+    private static final String END_MESSAGE = "is not acceptable";
 
     public NotAcceptableMethod(Method method) {
-        super(method.getName() + MESSAGE);
+        super(START_MESSAGE + ' ' + method.getName() + ' ' + END_MESSAGE);
     }
 }
