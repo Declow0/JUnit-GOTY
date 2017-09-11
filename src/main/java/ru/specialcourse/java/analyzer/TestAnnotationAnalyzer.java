@@ -22,7 +22,7 @@ public class TestAnnotationAnalyzer implements AnnotationAnalyzer {
         return (Method[]) withTestAnnotationMethods.toArray();
     }
 
-    public Class<? extends Throwable> getExpectedException(Method withTestAnnotationMethod) {
+    public Class<? extends Throwable> getExpectedExceptionClass(Method withTestAnnotationMethod) {
         if (withTestAnnotationMethod.isAnnotationPresent(Test.class)) {
             return withTestAnnotationMethod.getAnnotation(Test.class).expected();
         }

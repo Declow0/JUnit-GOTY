@@ -24,7 +24,7 @@ public class TestTask implements Runnable {
     }
 
     public void run() {
-        String stringBuffer = "";
+        StringBuilder stringBuilder = new StringBuilder(); // TODO: StringBuffer?
 
         try {
             Method beforeMethod = beforeAnnotationAnalyzer.analyze(clazz)[0];
@@ -34,7 +34,7 @@ public class TestTask implements Runnable {
             Object objectInstance = clazz.newInstance();
 
             for (Method testMethod : testMethods) {
-                Class exceptedException = testAnnotationAnalyzer.getExpectedException(testMethod);
+                Class exceptedException = testAnnotationAnalyzer.getExpectedExceptionClass(testMethod);
 
                 try {
                     beforeMethod.invoke(objectInstance);
@@ -43,17 +43,20 @@ public class TestTask implements Runnable {
                         testMethod.invoke(objectInstance);
                     } catch (Throwable e) {
                         // TODO: Обработка excepted exception и assert exception
+                        stringBuilder.append("Исключение");
                     }
 
                     afterMethod.invoke(objectInstance);
                 } catch (Exception e) {
                     // TODO: обработка исключений при исполнении методов
+                    stringBuilder.append("Исключение");
                 }
             }
         } catch (Exception e) {
             // TODO: обработать исключения неправильного считывания методов или создания экземпляра
+            stringBuilder.append("Исключение");
         }
 
-        Printer.print(stringBuffer);
+        Printer.print(stringBuilder.toString());
     }
 }
