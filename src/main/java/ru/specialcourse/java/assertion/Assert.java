@@ -137,24 +137,6 @@ public class Assert {
         assertNotEquals(message, Character.valueOf(unexpected), Character.valueOf(actual));
     }
 
-    public static void assertEquals(String expected, String actual) {
-        assertEquals(null, expected, actual);
-    }
-
-    public static void assertEquals(String message, String  expected, String actual) {
-        if (!expected.equals(actual)) {
-            failEquals(message, expected, actual);
-        }
-    }
-
-    public static void assertNotEquals(String unexpected, String actual) {
-        assertNotEquals(null, unexpected, actual);
-    }
-
-    public static void assertNotEquals(String message, String unexpected, String actual) {
-        assertNotEquals(message, String.valueOf(unexpected), String.valueOf(actual));
-    }
-
     public static void assertEquals(Object expected, Object actual) {
         assertEquals(null, expected, actual);
     }
@@ -164,7 +146,7 @@ public class Assert {
             return;
         }
 
-        failNotEquals(message, expected, actual);
+        failEquals(message, expected, actual);
     }
 
     public static void assertNotEquals(Object expected, Object actual) {
@@ -173,7 +155,7 @@ public class Assert {
 
     public static void assertNotEquals(String message, Object expected, Object actual) {
         if (isEquals(expected, actual)) {
-            failEquals(message, expected, actual);
+            failNotEquals(message, expected, actual);
         }
     }
 
@@ -190,11 +172,11 @@ public class Assert {
     }
 
     private static void failEquals(String message, Object expected, Object actual) {
-        throw new AssertionFailedError(formatUnExpected(message, expected, actual));
+        throw new AssertionFailedError(formatExpected(message, expected, actual));
     }
 
-    private static void failNotEquals(String message, Object expected, Object actual) {
-        throw new AssertionFailedError(formatExpected(message, expected, actual));
+    private static void failNotEquals(String message, Object unexpected, Object actual) {
+        throw new AssertionFailedError(formatUnExpected(message, unexpected, actual));
     }
 
     private static String formatExpected(String message, Object expected, Object actual) {
@@ -204,6 +186,7 @@ public class Assert {
         }
         return formatted + "expected:<" + expected + "> but was:<" + actual + ">";
     }
+
     private static String formatUnExpected(String message, Object expected, Object actual) {
         String formatted = "";
         if (message != null && message.length() > 0) {
