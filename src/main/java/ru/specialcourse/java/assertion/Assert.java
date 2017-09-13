@@ -90,35 +90,75 @@ public class Assert {
     }
 
     public static void assertEquals(float expected, float actual) {
-        assertEquals(null, expected, actual);
+        assertEquals(null, expected, actual, 0);
     }
 
     public static void assertEquals(String message, float expected, float actual) {
-        assertEquals(message, Float.valueOf(expected), Float.valueOf(actual));
+        assertEquals(message, expected, actual, 0);
+    }
+
+    public static void assertEquals(float expected, float actual, float delta) {
+        assertEquals(null, expected, actual ,delta);
+    }
+
+    public static void assertEquals(String message, float expected, float actual, float delta) {
+        if (floatIsDifferent(expected, actual, delta)) {
+            failEquals(message, expected, actual);
+        }
     }
 
     public static void assertNotEquals(float unexpected, float actual) {
-        assertNotEquals(null, unexpected, actual);
+        assertNotEquals(null, unexpected, actual, 0);
     }
 
     public static void assertNotEquals(String message, float unexpected, float actual) {
-        assertNotEquals(message, Float.valueOf(unexpected), Float.valueOf(actual));
+        assertNotEquals(message, unexpected, actual, 0);
+    }
+
+    public static void assertNotEquals(float unexpected, float actual, float delta) {
+        assertNotEquals(null, unexpected, actual, delta);
+    }
+
+    public static void assertNotEquals(String message, float unexpected, float actual, float delta) {
+        if (!floatIsDifferent(unexpected,actual, delta)) {
+            failNotEquals(message, actual);
+        }
     }
 
     public static void assertEquals(double expected, double actual) {
-        assertEquals(null, expected, actual);
+        assertEquals(null, expected, actual, 0);
     }
 
     public static void assertEquals(String message, double expected, double actual) {
-        assertEquals(message, Double.valueOf(expected), Double.valueOf(actual));
+        assertEquals(message, expected, actual, 0);
+    }
+
+    public static void assertEquals(double expected, double actual, double delta) {
+        assertEquals(null, expected, actual ,delta);
+    }
+
+    public static void assertEquals(String message, double expected, double actual, double delta) {
+        if (doubleIsDifferent(expected, actual, delta)) {
+            failEquals(message, expected, actual);
+        }
     }
 
     public static void assertNotEquals(double unexpected, double actual) {
-        assertNotEquals(null, unexpected, actual);
+        assertNotEquals(null, unexpected, actual, 0);
     }
 
     public static void assertNotEquals(String message, double unexpected, double actual) {
-        assertNotEquals(message, Double.valueOf(unexpected), Double.valueOf(actual));
+        assertNotEquals(message, unexpected, actual, 0);
+    }
+
+    public static void assertNotEquals(double unexpected, double actual, double delta) {
+        assertNotEquals(null, unexpected, actual, delta);
+    }
+
+    public static void assertNotEquals(String message, double unexpected, double actual, double delta) {
+        if (!doubleIsDifferent(unexpected, actual, delta)) {
+            failNotEquals(message, actual);
+        }
     }
 
     public static void assertEquals(char expected, char actual) {
@@ -155,8 +195,30 @@ public class Assert {
 
     public static void assertNotEquals(String message, Object expected, Object actual) {
         if (isEquals(expected, actual)) {
-            failNotEquals(message, expected, actual);
+            failNotEquals(message, actual);
         }
+    }
+
+    private static boolean doubleIsDifferent(double expected, double actual, double delta) {
+        if (expected == actual) {
+            return false;
+        }
+        if (Math.abs(expected - actual) <= delta) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean floatIsDifferent(float expected, float actual, float delta) {
+        if (expected == actual) {
+            return false;
+        }
+        if (Math.abs(expected - actual) <= delta) {
+            return false;
+        }
+
+        return true;
     }
 
     private static boolean isEquals(Object expected, Object actual) {
@@ -172,11 +234,11 @@ public class Assert {
     }
 
     private static void failEquals(String message, Object expected, Object actual) {
-        throw new AssertionFailedError(formatExpected(message, expected, actual));
+        fail(formatExpected(message, expected, actual));
     }
 
-    private static void failNotEquals(String message, Object unexpected, Object actual) {
-        throw new AssertionFailedError(formatUnExpected(message, unexpected, actual));
+    private static void failNotEquals(String message, Object actual) {
+        fail(formatUnexpected(message, actual));
     }
 
     private static String formatExpected(String message, Object expected, Object actual) {
@@ -184,15 +246,15 @@ public class Assert {
         if (message != null && message.length() > 0) {
             formatted = message + " ";
         }
-        return formatted + "expected:<" + expected + "> but was:<" + actual + ">";
+        return formatted + "expected: " + expected.getClass().getName() + " <" + expected +
+                ">, but actual: " + actual.getClass() + " <" + actual + ">";
     }
 
-    private static String formatUnExpected(String message, Object expected, Object actual) {
-        String formatted = "";
+    private static String formatUnexpected(String message, Object actual) {
+        String formatted = "values should be different";
         if (message != null && message.length() > 0) {
             formatted = message + " ";
         }
-        return formatted + "unexpected:<" + expected + "> but was:<" + actual + ">";
+        return formatted + ", but actual: " + actual.getClass().getName() + " <" + actual + ">";
     }
-
 }
