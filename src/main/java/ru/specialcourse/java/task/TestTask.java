@@ -3,6 +3,9 @@ package ru.specialcourse.java.task;
 import ru.specialcourse.java.analyzer.AfterAnnotationAnalyzer;
 import ru.specialcourse.java.analyzer.BeforeAnnotationAnalyzer;
 import ru.specialcourse.java.analyzer.TestAnnotationAnalyzer;
+import ru.specialcourse.java.annotation.Test;
+import ru.specialcourse.java.exception.AssertionFailedError;
+import ru.specialcourse.java.exception.NotThrownExpectedException;
 import ru.specialcourse.java.printer.Printer;
 
 import java.lang.reflect.Method;
@@ -23,40 +26,70 @@ public class TestTask implements Runnable {
     private TestTask() {
     }
 
+    @Override
     public void run() {
-        StringBuilder stringBuilder = new StringBuilder(); // TODO: StringBuffer?
+        StringBuilder stringBuilder = new StringBuilder();
+        long pass = 0, failed = 0;
 
         try {
             Method beforeMethod = beforeAnnotationAnalyzer.analyze(clazz)[0];
             Method[] testMethods = testAnnotationAnalyzer.analyze(clazz);
             Method afterMethod = afterAnnotationAnalyzer.analyze(clazz)[0];
 
-            Object objectInstance = clazz.newInstance();
-
             for (Method testMethod : testMethods) {
-                Class exceptedException = testAnnotationAnalyzer.getExpectedExceptionClass(testMethod);
+                Object objectInstance = clazz.newInstance();
+
+                Class<? extends Throwable> expectedException =
+                        testAnnotationAnalyzer.getExpectedExceptionClass(testMethod);
 
                 try {
-                    beforeMethod.invoke(objectInstance);
+                    if (beforeMethod != null) {
+                        beforeMethod.invoke(objectInstance);
+                    }
 
                     try {
                         testMethod.invoke(objectInstance);
+
+                        if (expectedException != Test.None.class) {
+                            throw new NotThrownExpectedException(expectedException);
+                        }
+
+                        pass++;
+                    } catch (NotThrownExpectedException e) {
+                        failed++;
+
+                        // нет ожидаемого исключения
+                        e.printStackTrace(System.err);
                     } catch (Throwable e) {
-                        // TODO: Обработка excepted exception и assert exception
-                        stringBuilder.append("Исключение");
+                        failed++;
+
+                        // Обработка excepted exception и assert exception
+                        if (!e.getCause().getClass().isAssignableFrom(expectedException)) {
+                            if (e.getCause().getClass().isAssignableFrom(AssertionFailedError.class)) {
+                                // исключения при проверке
+                                e.getCause().printStackTrace(System.err);
+                            } else {
+                                // исключения иные
+                                e.getCause().printStackTrace(System.err);
+                            }
+                        }
                     }
 
-                    afterMethod.invoke(objectInstance);
+                    if (afterMethod != null) {
+                        afterMethod.invoke(objectInstance);
+                    }
                 } catch (Exception e) {
-                    // TODO: обработка исключений при исполнении методов
-                    stringBuilder.append("Исключение");
+                    // исключения при исполнении методов Before & After
+                    e.getCause().printStackTrace(System.err);
                 }
             }
         } catch (Exception e) {
-            // TODO: обработать исключения неправильного считывания методов или создания экземпляра
-            stringBuilder.append("Исключение");
+            // исключения неправильного считывания методов или создания экземпляра
+            e.printStackTrace(System.err);
         }
 
         Printer.print(stringBuilder.toString());
+        // Counter.count(pass, failed);
+        System.out.println(pass + " " + failed);
     }
 }

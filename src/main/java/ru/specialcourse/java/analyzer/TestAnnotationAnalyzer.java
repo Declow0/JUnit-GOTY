@@ -2,13 +2,15 @@ package ru.specialcourse.java.analyzer;
 
 import ru.specialcourse.java.annotation.Test;
 import ru.specialcourse.java.exception.NotAcceptableMethod;
+import ru.specialcourse.java.exception.NotEmptyParametersException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestAnnotationAnalyzer implements AnnotationAnalyzer {
-    public Method[] analyze(Class<?> clazz) throws NotAcceptableMethod {
+    @Override
+    public Method[] analyze(Class<?> clazz) throws NotAcceptableMethod, NotEmptyParametersException {
         Method[] methods = clazz.getMethods();
         List<Method> withTestAnnotationMethods = new ArrayList<>();
 
@@ -19,7 +21,7 @@ public class TestAnnotationAnalyzer implements AnnotationAnalyzer {
             }
         }
 
-        return (Method[]) withTestAnnotationMethods.toArray();
+        return withTestAnnotationMethods.toArray(new Method[withTestAnnotationMethods.size()]);
     }
 
     public Class<? extends Throwable> getExpectedExceptionClass(Method withTestAnnotationMethod) {

@@ -3,11 +3,14 @@ package ru.specialcourse.java.analyzer;
 import ru.specialcourse.java.annotation.Before;
 import ru.specialcourse.java.exception.MultipleBeforeAnnotationException;
 import ru.specialcourse.java.exception.NotAcceptableMethod;
+import ru.specialcourse.java.exception.NotEmptyParametersException;
 
 import java.lang.reflect.Method;
 
 public class BeforeAnnotationAnalyzer implements AnnotationAnalyzer {
-    public Method[] analyze(Class<?> clazz) throws MultipleBeforeAnnotationException, NotAcceptableMethod {
+    @Override
+    public Method[] analyze(Class<?> clazz) throws MultipleBeforeAnnotationException, NotAcceptableMethod,
+            NotEmptyParametersException {
         Method[] methods = clazz.getMethods();
         Method withBeforeAnnotationMethod = null;
 
