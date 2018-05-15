@@ -22,9 +22,10 @@ public class SimpleTest {
     }
 
     @Test
-    public void test2() {
+    public int test2() {
         System.out.println("Тест №2 в 1");
         Assertions.assertEquals(3, 3);
+        return 1;
     }
 
     @After

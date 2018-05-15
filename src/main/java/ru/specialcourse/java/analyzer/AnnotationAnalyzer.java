@@ -13,7 +13,8 @@ public interface AnnotationAnalyzer {
 
     default void checkMethod(Method method) throws NotAcceptableMethod, NotEmptyParametersException {
         int mod = method.getModifiers();
-        if (Modifier.isAbstract(mod) || Modifier.isNative(mod) || !Modifier.isPublic(mod) || Modifier.isStatic(mod)) {
+        if (Modifier.isAbstract(mod) || Modifier.isNative(mod) || !Modifier.isPublic(mod) || Modifier.isStatic(mod)
+                || !(method.getReturnType().equals(void.class))) {
             throw new NotAcceptableMethod(method);
         }
 

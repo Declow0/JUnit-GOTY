@@ -11,7 +11,7 @@ public class SimpleTest2 {
     }
 
     @Test
-    public void kek() {
+    public static void kek() {
         System.out.println("Тест №1 в 2");
     }
 
