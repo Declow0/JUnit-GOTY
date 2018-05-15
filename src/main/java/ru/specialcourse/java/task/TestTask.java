@@ -71,13 +71,12 @@ public class TestTask implements Runnable {
                         if (expectedException != Test.None.class) {
                             throw new NotThrownExpectedException(expectedException);
                         }
-
-                        passed++;
                     } catch (NotThrownExpectedException e) {
                         expectedFailed++;
 
                         // нет ожидаемого исключения
                         appendException(testsErrorsReport, testMethod, e);
+                        continue;
                     } catch (Throwable e) {
                         // Обработка excepted exception и assert exception
                         if (!e.getCause().getClass().isAssignableFrom(expectedException)) {
@@ -99,6 +98,7 @@ public class TestTask implements Runnable {
                         if (afterMethod != null) {
                             afterMethod.invoke(objectInstance);
                         }
+                        passed++;
                     } catch (Exception e) {
                         otherFailed++;
                         // исключения иные --- при исполнении метода After
