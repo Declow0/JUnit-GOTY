@@ -36,6 +36,7 @@ public class TestTask implements Runnable {
     @Override
     public void run() {
         StringBuilder report = new StringBuilder();
+        report.append(System.lineSeparator());
         report.append(LINE);
         report.append(System.lineSeparator());
         report.append("Test class: ");
@@ -45,6 +46,7 @@ public class TestTask implements Runnable {
         report.append(System.lineSeparator());
 
         long run = 0, passed = 0, assertFailed = 0, expectedFailed = 0, otherFailed = 0;
+        boolean isInvalid = false;
         StringBuilder testsErrorsReport = new StringBuilder();
         StringBuilder classErrorsReport = new StringBuilder();
 
@@ -114,8 +116,8 @@ public class TestTask implements Runnable {
                 }
             }
         } catch (Exception e) {
-            otherFailed++;
-            classErrorsReport.append("Class has bad structure!");
+            isInvalid = true;
+            classErrorsReport.append("Class has invalid structure!");
             classErrorsReport.append(FAILURE);
             classErrorsReport.append(System.lineSeparator());
 
@@ -144,8 +146,10 @@ public class TestTask implements Runnable {
         report.append(classErrorsReport);
 
         report.append(testsErrorsReport);
+        report.append(LINE);
+        report.append(System.lineSeparator());
 
-        Printer.print(report.toString(), run, passed, assertFailed + expectedFailed + otherFailed);
+        Printer.print(report.toString(), run, passed, assertFailed + expectedFailed + otherFailed, isInvalid);
 
         latch.countDown();
     }

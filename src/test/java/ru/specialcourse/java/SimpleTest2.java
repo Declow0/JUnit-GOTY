@@ -11,7 +11,7 @@ public class SimpleTest2 {
     }
 
     @Test
-    public static void kek() {
+    public void kek() {
         System.out.println("Тест №1 в 2");
     }
 
@@ -23,7 +23,5 @@ public class SimpleTest2 {
     @After
     public void cleanUp() {
         System.out.println("Очистка в 2");
-        Object a = null;
-        a.getClass();
     }
 }
