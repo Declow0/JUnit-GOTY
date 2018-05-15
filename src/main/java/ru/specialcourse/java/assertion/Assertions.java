@@ -2,8 +2,8 @@ package ru.specialcourse.java.assertion;
 
 import ru.specialcourse.java.exception.AssertionFailedError;
 
-public class Assert {
-    protected Assert() {
+public class Assertions {
+    protected Assertions() {
 
     }
 

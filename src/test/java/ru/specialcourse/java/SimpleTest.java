@@ -3,12 +3,15 @@ package ru.specialcourse.java;
 import ru.specialcourse.java.annotation.After;
 import ru.specialcourse.java.annotation.Before;
 import ru.specialcourse.java.annotation.Test;
-import ru.specialcourse.java.assertion.Assert;
+import ru.specialcourse.java.assertion.Assertions;
 
 public class SimpleTest {
     @Before
     public void setUp() {
         System.out.println("Настройка");
+
+        Object a = null;
+        a.getClass();
     }
 
     @Test(expected = NullPointerException.class)
@@ -18,13 +21,13 @@ public class SimpleTest {
         Object a = null;
 //        a.getClass();
 
-        Assert.assertEquals(3, 3);
+        Assertions.assertEquals(3, 3);
     }
 
     @Test
     public void test2() {
         System.out.println("Тест2");
-        Assert.assertEquals(3, 3);
+        Assertions.assertEquals(3, 3);
     }
 
     @After
